@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Shen — Math & CS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #e8e8f0;
+    --muted: #6b6b85;
+    --accent: #7c6fff;
+    --accent2: #3eeac5;
+    --accent3: #ff6b8a;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+    --display: 'Bebas Neue', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* grid bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,111,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,111,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* noise grain */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+  }
+  nav .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+  .nav-logo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    padding: 148px 0 96px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(56px, 10vw, 88px);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: 0.03em;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+  h1 .dim { color: var(--muted); font-weight: 400; }
+  h1 .accent { color: var(--accent); }
+
+  .hero-desc {
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+  .hero-desc strong { color: var(--text); font-weight: 400; }
+
+  .hero-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #9585ff; transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border-bright);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); transform: translateY(-1px); }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: var(--sans);
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* SECTIONS */
+  section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    transition: border-color 0.2s;
+  }
+  .about-card:hover { border-color: var(--border-bright); }
+  .about-card-icon {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .about-card h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .about-card p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* PROJECTS */
+  .project-list { display: flex; flex-direction: column; }
+  .project-item {
+    position: relative;
+    display: block;
+    padding: 22px 36px 22px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.15s;
+  }
+  .project-body { width: 100%; }
+  .project-item:last-child { border-bottom: none; }
+  .project-item:hover .project-title { color: var(--accent); }
+  .project-meta { font-size: 11px; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.06em; }
+  .project-title {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    transition: color 0.15s;
+    line-height: 1.3;
+  }
+  .project-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .project-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .tag.accent { border-color: rgba(124,111,255,0.3); color: var(--accent); }
+  .tag.green { border-color: rgba(62,234,197,0.3); color: var(--accent2); }
+  .tag.pink { border-color: rgba(255,107,138,0.3); color: var(--accent3); }
+  .project-arrow {
+    position: absolute;
+    top: 22px;
+    right: 0;
+    color: var(--muted);
+    font-size: 14px;
+    transition: transform 0.15s, color 0.15s;
+  }
+  .project-item:hover .project-arrow { transform: translate(2px, -2px); color: var(--accent); }
+
+  /* AWARDS */
+  .award-list { display: flex; flex-direction: column; gap: 0; }
+  .award-item {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .award-item:last-child { border-bottom: none; }
+  .award-year { font-size: 11px; color: var(--muted); min-width: 36px; letter-spacing: 0.04em; }
+  .award-name { font-size: 13px; color: var(--text); flex: 1; }
+  .award-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .badge-gold { background: rgba(239,177,40,0.12); color: #efb128; border: 1px solid rgba(239,177,40,0.25); }
+  .badge-silver { background: rgba(168,168,200,0.1); color: #a8a8c8; border: 1px solid rgba(168,168,200,0.2); }
+  .badge-blue { background: rgba(124,111,255,0.1); color: var(--accent); border: 1px solid rgba(124,111,255,0.2); }
+
+  /* CONTACT */
+  .contact-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 0.15s;
+    font-size: 13px;
+  }
+  .contact-row:last-child { border-bottom: none; }
+  .contact-row:hover { color: var(--text); }
+  .contact-icon { width: 32px; font-size: 14px; color: var(--accent); opacity: 0.8; }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 0;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero > * { animation: fadeUp 0.6s ease both; }
+  .hero-tag { animation-delay: 0.05s; }
+  h1 { animation-delay: 0.15s; }
+  .hero-desc { animation-delay: 0.25s; }
+  .hero-links { animation-delay: 0.35s; }
+  .hero-stats { animation-delay: 0.45s; }
+
+  /* cursor dot */
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">bill<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#awards">Awards</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-tag">Available for research & internships</div>
+    <h1>Zhekai <span class="dim">(Bill)</span><br>Shen<span class="accent">.</span></h1>
+    <p class="hero-desc">
+      Incoming <strong>MIT</strong> student in Mathematics with Computer Science.
+      I work at the intersection of pure math, machine learning, and real-world impact —
+      from competitive mathematics to AI safety and assistive robotics.
+    </p>
+    <div class="hero-links">
+      <a href="https://www.linkedin.com/in/zhekai-shen-a25335367/" class="btn btn-primary" target="_blank">LinkedIn ↗</a>
+      <a href="https://github.com/ZhekaiShen" class="btn btn-ghost" target="_blank">GitHub</a>
+      <a href="mailto:zhekai@mit.edu" class="btn btn-ghost">Email</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">IMO<span>'25</span></div>
+        <div class="stat-label">Canadian Team</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">MIT<span>'30</span></div>
+        <div class="stat-label">Incoming Fall</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3<span>×</span></div>
+        <div class="stat-label">Major Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Math Problems</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="section-label">About</div>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-card-icon">📐</div>
+        <h3>Mathematics</h3>
+        <p>Competition math from middle school through IMO. Deep interest in analysis, number theory, and algebraic topology. Independent research published in peer-reviewed journals.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-card-icon">🤖</div>
+        <h3>Machine Learning & AI</h3>
+        <p>Graph neural networks, reinforcement learning, SFT, multi-agent systems. Applied ML for social impact — sign language recognition, AI detection, and drug design.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-card-icon">💹</div>
+        <h3>Quantitative Finance</h3>
+        <p>Interested in the mathematical foundations of markets. Attended Jane Street's Celebration of Math. Exploring intersections of math, CS, and finance.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-card-icon">🌊</div>
+        <h3>Outside the desk</h3>
+        <p>Founded a rowing club and math club in high school. Grew up in Shanghai, based in New Jersey. Spicy food enthusiast. Hearts of Iron IV modder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-label">Projects</div>
+    <div class="project-list">
+
+      <a href="https://github.com/ZhekaiShen" class="project-item" target="_blank">
+        <div class="project-body">
+          <div class="project-meta">Assistive Technology · 2023–2024</div>
+          <div class="project-title">ChatSLR — Sign Language Recognition Robotic Arm</div>
+          <div class="project-desc">Real-time ASL recognition system built for a deaf friend. Uses graph convolutional networks on hand-skeleton keypoints to drive a robotic arm that bridges the communication gap. ISEF 2024 Finalist.</div>
+          <div class="project-tags">
+            <span class="tag accent">GCN</span>
+            <span class="tag accent">PyTorch</span>
+            <span class="tag">Robotics</span>
+            <span class="tag">OpenCV</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <a href="https://github.com/ZhekaiShen/Masquerade" class="project-item" target="_blank">
+        <div class="project-body">
+          <div class="project-meta">AI Safety · 2024</div>
+          <div class="project-title">Masquerade — Multi-Agent AI Information Verification</div>
+          <div class="project-desc">Multi-format AI-generated content detection system. Combines ResNet50-based video frame analysis, optical flow maps, and GPT-2 perplexity scoring for text detection. Targets deepfakes, AI images, and misinformation.</div>
+          <div class="project-tags">
+            <span class="tag accent">Multi-Agent</span>
+            <span class="tag accent">ResNet50</span>
+            <span class="tag">GPT-2</span>
+            <span class="tag">Optical Flow</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <a href="https://github.com/ZhekaiShen/MMIDR" class="project-item" target="_blank">
+        <div class="project-body">
+          <div class="project-meta">NLP · 2023–2024</div>
+          <div class="project-title">MMIDR — Multi-scale AI Text Detection</div>
+          <div class="project-desc">Novel AI-generated text detection via multi-scale rewriting. Analyzes information changes before and after rewriting using LLM black-box characteristics — no additional training overhead required. Yau Award Bronze (CS).</div>
+          <div class="project-tags">
+            <span class="tag pink">LLM</span>
+            <span class="tag pink">NLP</span>
+            <span class="tag">AI Detection</span>
+            <span class="tag">Zero-shot</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <div class="project-item" style="cursor: default;">
+        <div class="project-body">
+          <div class="project-meta">Pure Mathematics · Independent Research · 2023–2024</div>
+          <div class="project-title">Continuous Points of Functions on an Interval</div>
+          <div class="project-desc">Given A ⊆ B ⊆ [0,1], proved existence and non-existence theorems for functions f : [0,1] → ℝ that are Lipschitz continuous exactly on A and continuous exactly on B. Published in <em>Examples and Counterexamples</em>, Vol. 8 (2025). Yau Award Nominee (Math).</div>
+          <div class="project-tags">
+            <span class="tag">Measure Theory</span>
+            <span class="tag">Real Analysis</span>
+            <span class="tag">Published</span>
+          </div>
+        </div>
+        <div class="project-arrow" style="opacity:0;">↗</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="awards">
+    <div class="section-label">Awards & Recognition</div>
+    <div class="award-list">
+      <div class="award-item">
+        <span class="award-year">2025</span>
+        <span class="award-name">International Mathematical Olympiad — Canadian Team Member</span>
+        <span class="award-badge badge-gold">IMO</span>
+      </div>
+      <div class="award-item">
+        <span class="award-year">2025</span>
+        <span class="award-name">Canadian Mathematical Olympiad — Silver Medal</span>
+        <span class="award-badge badge-silver">CMO</span>
+      </div>
+      <div class="award-item">
+        <span class="award-year">2024</span>
+        <span class="award-name">Yau Science Award — Bronze, Mathematics & Computer Science</span>
+        <span class="award-badge badge-gold">Yau</span>
+      </div>
+      <div class="award-item">
+        <span class="award-year">2024</span>
+        <span class="award-name">ISEF — Finalist</span>
+        <span class="award-badge badge-blue">ISEF</span>
+      </div>
+      <div class="award-item">
+        <span class="award-year">2024</span>
+        <span class="award-name">USACO — Platinum Division</span>
+        <span class="award-badge badge-blue">USACO</span>
+      </div>
+      <div class="award-item">
+        <span class="award-year">2026</span>
+        <span class="award-name">NJ Governor's STEM Scholars Program</span>
+        <span class="award-badge badge-blue">NJ Gov</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-label">Contact</div>
+    <a href="mailto:zhekai@mit.edu" class="contact-row">
+      <span class="contact-icon">✉</span>
+      <span>zhekai@mit.edu</span>
+    </a>
+    <a href="https://www.linkedin.com/in/zhekai-shen-a25335367/" class="contact-row" target="_blank">
+      <span class="contact-icon">in</span>
+      <span>linkedin.com/in/zhekai-shen-a25335367</span>
+    </a>
+    <a href="https://github.com/ZhekaiShen" class="contact-row" target="_blank">
+      <span class="contact-icon">gh</span>
+      <span>github.com/ZhekaiShen</span>
+    </a>
+  </section>
+
+</div>
+
+<div class="container">
+  <footer>
+    <span>© 2026 Zhekai Shen</span>
+    <span>Built with HTML · Hosted on GitHub Pages</span>
+  </footer>
+</div>
+
+</body>
+</html>
